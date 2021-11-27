@@ -1,8 +1,15 @@
 package main;
 
-import checker.Checkstyle;
+import actions.commands.Commands;
+import actions.commands.Favorite;
+import actions.commands.Rate;
+import actions.commands.ViewVideo;
 import checker.Checker;
+import checker.Checkstyle;
 import common.Constants;
+import entities.Entities;
+import entities.User;
+import fileio.ActionInputData;
 import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
@@ -71,7 +78,26 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
+        Entities allEntities = new Entities(input);
 
+        for (ActionInputData action: input.getCommands()) {
+            if (action.getActionType().equals(Constants.COMMAND)) {
+                for (User user : allEntities.getUsers()) {
+                    if (action.getUsername().equals(user.getUsername())) {
+                        new Commands();
+                        Commands com = switch (action.getType()) {
+                            case Constants.FAVORITE -> new Favorite();
+                            case Constants.VIEW -> new ViewVideo();
+                            case Constants.RATING -> new Rate(allEntities);
+                            default -> new Commands();
+                        };
+                        String message = com.action(user, action);
+                        arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
+                        break;
+                    }
+                }
+            }
+        }
         fileWriter.closeJSON(arrayResult);
     }
 }

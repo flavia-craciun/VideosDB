@@ -1,2 +1,7 @@
 Starting audit...
+[ERROR] /Users/flaviacraciun/Desktop/Facultate II/POO/teme/VideosDB - tema1/tema1-OOP/./src/actions/commands/Commands.java:13:5: Class 'Commands' looks like designed for extension (can be subclassed), but the method 'action' does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class 'Commands' final or making the method 'action' static/final/abstract/empty, or adding allowed annotation for the method. [DesignForExtension]
+[ERROR] /Users/flaviacraciun/Desktop/Facultate II/POO/teme/VideosDB - tema1/tema1-OOP/./src/actions/commands/Commands.java:13:5: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /Users/flaviacraciun/Desktop/Facultate II/POO/teme/VideosDB - tema1/tema1-OOP/./src/entities/Serial.java:62:9: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /Users/flaviacraciun/Desktop/Facultate II/POO/teme/VideosDB - tema1/tema1-OOP/./src/entities/Movie.java:47:5: Missing a Javadoc comment. [MissingJavadocMethod]
 Audit done.
+Checkstyle ends with 4 errors.
