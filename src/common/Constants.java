@@ -32,7 +32,7 @@ public final class Constants {
     public static final String ID = "action_id";
     public static final String ACTION_TYPE = "action_type";
     public static final String TYPE = "type";
-    public static final String USER = "user";
+    public static final String USER = "user"; // modified by me from entities
     public static final String ACTIONS = "actions";
     public static final String FILTERS = "filters";
     public static final String SORT = "sort_type";
@@ -52,7 +52,10 @@ public final class Constants {
     public static final String REVIEWS = "reviews";
     public static final String MESSAGE = "message";
     public static final String QUERY = "query";
+    public static final String FAVORITE = "favorite"; // added by me
+    public static final String VIEW = "view"; // added by me
     public static final String COMMAND = "command";
+    public static final String RATING = "rating"; // added by me
     public static final String RECOMMENDATION = "recommendation";
 
     // checker constants
