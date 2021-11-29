@@ -4,7 +4,7 @@ import entities.User;
 import fileio.ActionInputData;
 
 public class Commands {
-    private StringBuilder message = new StringBuilder();
+    private final StringBuilder message = new StringBuilder();
 
     public final StringBuilder getMessage() {
         return message;

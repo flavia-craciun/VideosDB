@@ -4,6 +4,13 @@ import actions.commands.Commands;
 import actions.commands.Favorite;
 import actions.commands.Rate;
 import actions.commands.ViewVideo;
+
+import actions.queries.Query;
+import actions.queries.ForActors;
+import actions.queries.ForShows;
+import actions.queries.ForMovies;
+import actions.queries.ForUsers;
+
 import checker.Checker;
 import checker.Checkstyle;
 import common.Constants;
@@ -95,6 +102,20 @@ public final class Main {
                         arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
                         break;
                     }
+                }
+            } else {
+                if (action.getActionType().equals(Constants.QUERY)) {
+                    new Query(allEntities);
+                    Query q = switch (action.getObjectType()) {
+                        case Constants.USERS -> new ForUsers(allEntities);
+                        case Constants.ACTORS -> new ForActors(allEntities);
+                        case Constants.MOVIES -> new ForMovies(allEntities);
+                        case Constants.SHOWS -> new ForShows(allEntities);
+                        default -> new Query(allEntities);
+                    };
+                    String message = q.doQuery(action);
+                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
+                    break;
                 }
             }
         }

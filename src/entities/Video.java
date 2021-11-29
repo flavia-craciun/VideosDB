@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public abstract class Video {
     private String title;
     private int year;
-    private String videoType;
     private ArrayList<String> genres;
     private ArrayList<String> cast;
 
@@ -16,10 +15,6 @@ public abstract class Video {
 
     public final int getYear() {
         return year;
-    }
-
-    public final String getVideoType() {
-        return videoType;
     }
 
     public final ArrayList<String> getGenres() {
@@ -38,10 +33,6 @@ public abstract class Video {
         this.year = year;
     }
 
-    public final void setVideoType(final String type) {
-        this.videoType = type;
-    }
-
     public final void setGenres(final ArrayList<String> genres) {
         this.genres = genres;
     }
@@ -49,4 +40,6 @@ public abstract class Video {
     public final void setCast(final ArrayList<String> cast) {
         this.cast = cast;
     }
+
+    public abstract Double getAverageRating();
 }
