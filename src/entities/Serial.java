@@ -1,6 +1,5 @@
 package entities;
 
-import common.Constants;
 import fileio.SerialInputData;
 
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Serial extends Video {
-
     private final int numberOfSeasons;
     private final ArrayList<Season> seasons = new ArrayList<>();
 
@@ -20,7 +18,6 @@ public final class Serial extends Video {
         super();
         setTitle(serial.getTitle());
         setYear(serial.getYear());
-        setVideoType(Constants.SHOWS);
         setGenres(serial.getGenres());
         setCast(serial.getCast());
         numberOfSeasons = serial.getNumberSeason();
@@ -30,10 +27,19 @@ public final class Serial extends Video {
         }
     }
 
+    @Override
+    public Double getAverageRating() {
+        Double showAverage = 0.0;
+        for (Season season: getSeasons()) {
+                showAverage = showAverage + season.getAverageRating();
+            }
+        showAverage = showAverage / numberOfSeasons;
+        return showAverage;
+    }
+
     public final class Season {
         private final int duration;
         private HashMap<String, Double> allRatings = new HashMap<>();
-        private static Double averageRating;
 
         public int getDuration() {
             return duration;
@@ -41,10 +47,6 @@ public final class Serial extends Video {
 
         public HashMap<String, Double> getAllRatings() {
             return allRatings;
-        }
-
-        public Double getAverageRating() {
-            return averageRating;
         }
 
         public Season(final entertainment.Season season, final ArrayList<User> users) {
@@ -59,14 +61,19 @@ public final class Serial extends Video {
             return allRatings;
         }
 
-        public void changeRating() {
-            averageRating = 0.0;
+        public Double getAverageRating() {
+            Double averageRating = 0.0;
+            int numberOfUsers = 0;
             for (Map.Entry<String, Double> entry : getAllRatings().entrySet()) {
                 if (entry.getValue() != 0) {
+                    numberOfUsers++;
                     averageRating = averageRating + entry.getValue();
                 }
             }
-            averageRating = averageRating / getAllRatings().size();
+            if (numberOfUsers != 0) {
+                averageRating = averageRating / numberOfUsers;
+            }
+            return averageRating;
         }
     }
 }

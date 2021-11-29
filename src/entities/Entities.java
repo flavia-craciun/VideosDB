@@ -4,6 +4,7 @@ import fileio.Input;
 import fileio.MovieInputData;
 import fileio.SerialInputData;
 import fileio.UserInputData;
+import fileio.ActorInputData;
 
 import java.util.ArrayList;
 
@@ -11,8 +12,9 @@ public final class Entities {
      private final ArrayList<User> users = new ArrayList<>();
      private final ArrayList<Movie> movies = new ArrayList<>();
      private final ArrayList<Serial> series = new ArrayList<>();
+    private final ArrayList<Actor> actors = new ArrayList<>();
 
-     public Entities(final Input input) {
+    public Entities(final Input input) {
          for (UserInputData user : input.getUsers()) {
              User u = new User(user);
              users.add(u);
@@ -25,6 +27,11 @@ public final class Entities {
              Serial ser = new Serial(serial, users);
              series.add(ser);
          }
+
+        for (ActorInputData actor: input.getActors()) {
+            Actor a = new Actor(actor);
+            actors.add(a);
+        }
      }
 
     public ArrayList<User> getUsers() {
@@ -38,4 +45,9 @@ public final class Entities {
     public ArrayList<Serial> getSeries() {
         return series;
     }
+
+    public ArrayList<Actor> getActors() {
+        return actors;
+    }
+
 }

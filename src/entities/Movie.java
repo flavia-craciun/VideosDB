@@ -1,6 +1,5 @@
 package entities;
 
-import common.Constants;
 import fileio.MovieInputData;
 
 import java.util.ArrayList;
@@ -10,15 +9,12 @@ import java.util.Map;
 
 public final class Movie extends Video {
     private final int duration;
-
     private HashMap<String, Double> allRatings = new HashMap<>();
-    private Double rating;
 
     public Movie(final MovieInputData movie, final ArrayList<User> users) {
         super();
         setTitle(movie.getTitle());
         setYear(movie.getYear());
-        setVideoType(Constants.MOVIES);
         setGenres(movie.getGenres());
         setCast(movie.getCast());
         duration = movie.getDuration();
@@ -27,10 +23,6 @@ public final class Movie extends Video {
 
     public int getDuration() {
         return duration;
-    }
-
-    public Double getRating() {
-        return rating;
     }
 
     public HashMap<String, Double> getAllRatings() {
@@ -44,13 +36,19 @@ public final class Movie extends Video {
         return allRatings;
     }
 
-    public void changeRating() {
-        rating = 0.0;
+    @Override
+    public Double getAverageRating() {
+        Double averageRating = 0.0;
+        int numberOfUsers = 0;
         for (Map.Entry<String, Double> entry : getAllRatings().entrySet()) {
             if (entry.getValue() != 0) {
-                rating = rating + entry.getValue();
+                numberOfUsers++;
+                averageRating = averageRating + entry.getValue();
             }
         }
-        rating = rating / getAllRatings().size();
+        if (numberOfUsers != 0) {
+            averageRating = averageRating / numberOfUsers;
+        }
+        return averageRating;
     }
 }

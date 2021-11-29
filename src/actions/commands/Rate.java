@@ -35,13 +35,16 @@ public final class Rate extends Commands {
                 if (movie.getTitle().equals(action.getTitle())) {
                     if (Double.compare(movie.getAllRatings().get(action.getUsername()), 0.0) == 0) {
                         movie.getAllRatings().replace(action.getUsername(), action.getGrade());
-                        movie.changeRating();
                         getMessage().append("success -> ");
                         getMessage().append(movie.getTitle());
                         getMessage().append(" was rated with ");
                         getMessage().append(movie.getAllRatings().get(action.getUsername()));
                         getMessage().append(" by ");
                         getMessage().append(action.getUsername());
+                    } else {
+                        getMessage().append("error -> ");
+                        getMessage().append(movie.getTitle());
+                        getMessage().append(" has been already rated");
                     }
                 }
             }
@@ -60,7 +63,6 @@ public final class Rate extends Commands {
                             .getAllRatings().get(action.getUsername()), 0.0) == 0) {
                         show.getSeasons().get(action.getSeasonNumber() - 1).getAllRatings()
                                 .replace(action.getUsername(), action.getGrade());
-                        show.getSeasons().get(action.getSeasonNumber() - 1).changeRating();
                         getMessage().append("success -> ");
                         getMessage().append(show.getTitle());
                         getMessage().append(" was rated with ");
@@ -68,6 +70,10 @@ public final class Rate extends Commands {
                                 .getAllRatings().get(action.getUsername()));
                         getMessage().append(" by ");
                         getMessage().append(action.getUsername());
+                    } else {
+                        getMessage().append("error -> ");
+                        getMessage().append(show.getTitle());
+                        getMessage().append(" has been already rated");
                     }
                 }
             }
