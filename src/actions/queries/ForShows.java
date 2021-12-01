@@ -58,7 +58,7 @@ public final class ForShows extends Query {
                         if (action.getSortType().equals(Constants.ASCENDENT)) {
                             Collections.sort(nameList);
                         } else {
-                            Collections.reverse(nameList);
+                            Collections.sort(nameList, Collections.reverseOrder());
                         }
                         int size = 0;
                         if (nameList.size() < action.getNumber() - numberOfResults) {
@@ -92,6 +92,11 @@ public final class ForShows extends Query {
                     size = nameList.size();
                 } else {
                     size = action.getNumber() - numberOfResults;
+                }
+                if (action.getSortType().equals(Constants.ASCENDENT)) {
+                    Collections.sort(nameList);
+                } else {
+                    Collections.sort(nameList, Collections.reverseOrder());
                 }
                 IntStream.range(0, size).forEach(i -> {
                     getMessage().append(nameList.get(i));
@@ -165,11 +170,11 @@ public final class ForShows extends Query {
                                final List<Map.Entry<Serial, Double>> list) {
         for (Iterator<Map.Entry<Serial, Double>> iterator = list.iterator(); iterator.hasNext();) {
             Map.Entry<Serial, Double>  entry = iterator.next();
-            if (!filters.get(1).equals(null)
+            if (filters.get(1).get(0) != null
                     && !entry.getKey().getGenres().contains(filters.get(1).get(0))) {
                 iterator.remove();
             } else {
-                if (!filters.get(0).isEmpty()
+                if (filters.get(0).get(0) != null
                         && !filters.get(0).contains(String.valueOf(entry.getKey().getYear()))) {
                     iterator.remove();
                 }

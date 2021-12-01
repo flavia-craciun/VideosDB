@@ -25,17 +25,38 @@ public final class ForActors extends Query {
 
     @Override
     public String doQuery(final ActionInputData action) {
-        List<Map.Entry<Actor, Double>> list;
-
         switch (action.getCriteria()) {
             case Constants.AWARDS -> getActorsByAwards(action);
             case Constants.FILTER_DESCRIPTIONS -> getActorByDescription(action);
             default -> getActorsByAverageRating();
         }
 
-        list = sortByValue(actorsByCriteria);
-
         getMessage().append("Query result: [");
+
+        if (action.getCriteria().compareTo(Constants.FILTER_DESCRIPTIONS) == 0) {
+            List<String> nameList = new ArrayList<>();
+            for (Map.Entry<Actor, Double> entry : actorsByCriteria.entrySet()) {
+                nameList.add(entry.getKey().getName());
+            }
+            if (nameList.isEmpty()) {
+                getMessage().append("]");
+                return getMessage().toString();
+            }
+            Collections.sort(nameList);
+            if (!action.getSortType().equals(Constants.ASCENDENT)) {
+                Collections.reverse(nameList);
+            }
+            IntStream.range(0, nameList.size()).forEach(i -> {
+                getMessage().append(nameList.get(i));
+                getMessage().append(", ");
+            });
+            getMessage().replace(getMessage().length() - 2, getMessage().length() - 1, "]");
+            getMessage().deleteCharAt(getMessage().length() - 1);
+            return getMessage().toString();
+        }
+
+        List<Map.Entry<Actor, Double>> list = sortByValue(actorsByCriteria);
+
         if (!action.getSortType().equals(Constants.ASCENDENT)) {
             Collections.reverse(list);
         }
@@ -57,7 +78,7 @@ public final class ForActors extends Query {
                     if (action.getSortType().equals(Constants.ASCENDENT)) {
                         Collections.sort(nameList);
                     } else {
-                        Collections.reverse(nameList);
+                        Collections.sort(nameList, Collections.reverseOrder());
                     }
                     int size = 0;
                     if (nameList.size() < action.getNumber() - numberOfResults) {
@@ -91,11 +112,16 @@ public final class ForActors extends Query {
                 size = nameList.size();
             } else {
                 size = action.getNumber() - numberOfResults;
-                IntStream.range(0, size).forEach(i -> {
-                    getMessage().append(nameList.get(i));
-                    getMessage().append(", ");
-                });
             }
+            if (action.getSortType().equals(Constants.ASCENDENT)) {
+                Collections.sort(nameList);
+            } else {
+                Collections.sort(nameList, Collections.reverseOrder());
+            }
+            IntStream.range(0, size).forEach(i -> {
+                getMessage().append(nameList.get(i));
+                getMessage().append(", ");
+            });
         }
 
         getMessage().replace(getMessage().length() - 2, getMessage().length() - 1, "]");
@@ -135,10 +161,10 @@ public final class ForActors extends Query {
             for (String nameOfAward : action.getFilters().get(3)) {
                 boolean gotAward = false;
                 for (ActorsAwards award : actor.getAwards().keySet()) {
+                    numberOfAwards = numberOfAwards + actor.getAwards().get(award);
                     if (award.name().compareTo(nameOfAward) == 0) {
                         gotAward = true;
-                        numberOfAwards = numberOfAwards + actor.getAwards().get(award);
-                        break;
+//                        break;
                     }
                 }
                 if (!gotAward) {
@@ -154,7 +180,11 @@ public final class ForActors extends Query {
         for (Actor actor: getEntities().getActors()) {
             actorsByCriteria.put(actor, 0.0);
             for (String word : action.getFilters().get(2)) {
-                if (!actor.getCareerDescription().contains(word)) {
+                String careerDescription = actor.getCareerDescription().toLowerCase();
+                String[] tokens = careerDescription.split("\\W");
+                List<String> words = new ArrayList<>();
+                words.addAll(List.of(tokens));
+                if (!words.contains(word)) {
                     actorsByCriteria.remove(actor);
                     break;
                 }

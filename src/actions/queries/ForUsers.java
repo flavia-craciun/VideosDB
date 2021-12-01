@@ -52,7 +52,7 @@ public final class ForUsers extends Query {
                     if (action.getSortType().equals(Constants.ASCENDENT)) {
                         Collections.sort(nameList);
                     } else {
-                        Collections.reverse(nameList);
+                        Collections.sort(nameList, Collections.reverseOrder());
                     }
                     int size = 0;
                     if (nameList.size() < action.getNumber() - numberOfResults) {
@@ -86,6 +86,11 @@ public final class ForUsers extends Query {
                 size = nameList.size();
             } else {
                 size = action.getNumber() - numberOfResults;
+            }
+            if (action.getSortType().equals(Constants.ASCENDENT)) {
+                Collections.sort(nameList);
+            } else {
+                Collections.sort(nameList, Collections.reverseOrder());
             }
             IntStream.range(0, size).forEach(i -> {
                 getMessage().append(nameList.get(i));
