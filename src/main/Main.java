@@ -90,6 +90,7 @@ public final class Main {
 
         //TODO add here the entry point to your implementation
         Entities allEntities = new Entities(input);
+        String message = new String();
 
         for (ActionInputData action: input.getCommands()) {
             if (action.getActionType().equals(Constants.COMMAND)) {
@@ -102,8 +103,7 @@ public final class Main {
                             case Constants.RATING -> new Rate(allEntities);
                             default -> new Commands();
                         };
-                        String message = com.action(user, action);
-                        arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
+                        message = com.action(user, action);
                         break;
                     }
                 }
@@ -117,8 +117,7 @@ public final class Main {
                         case Constants.SHOWS -> new ForShows(allEntities);
                         default -> new Query(allEntities);
                     };
-                    String message = q.doQuery(action);
-                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
+                    message = q.doQuery(action);
                 } else {
                     if (action.getActionType().equals(Constants.RECOMMENDATION)) {
                         new Reccommendation(allEntities);
@@ -127,11 +126,11 @@ public final class Main {
                             case Constants.BEST_UNSEEN -> new BestUnseen(allEntities);
                             default -> new ForPremiumUsers(allEntities);
                         };
-                        String message = rec.getReccomendation(action);
-                        arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
+                        message = rec.getReccomendation(action);
                     }
                 }
             }
+            arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
         }
         fileWriter.closeJSON(arrayResult);
     }

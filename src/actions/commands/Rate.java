@@ -1,9 +1,10 @@
 package actions.commands;
 
+import entities.User;
 import entities.Entities;
 import entities.Movie;
 import entities.Serial;
-import entities.User;
+import entities.Video;
 import fileio.ActionInputData;
 
 public final class Rate extends Commands {
@@ -26,10 +27,8 @@ public final class Rate extends Commands {
     }
 
     private void rateMovie(final User user, final ActionInputData action) {
-        if (!user.getHistory().containsKey(action.getTitle())) {
-            getMessage().append("error -> ");
-            getMessage().append(action.getTitle());
-            getMessage().append(" is not seen");
+        if (!isSeen(user, action)) {
+            return;
         } else {
             for (Movie movie : entities.getMovies()) {
                 if (movie.getTitle().equals(action.getTitle())) {
@@ -42,9 +41,7 @@ public final class Rate extends Commands {
                         getMessage().append(" by ");
                         getMessage().append(action.getUsername());
                     } else {
-                        getMessage().append("error -> ");
-                        getMessage().append(movie.getTitle());
-                        getMessage().append(" has been already rated");
+                        composeErrorMessage(movie);
                     }
                 }
             }
@@ -52,10 +49,8 @@ public final class Rate extends Commands {
     }
 
     private void rateShow(final User user, final ActionInputData action) {
-        if (!user.getHistory().containsKey(action.getTitle())) {
-            getMessage().append("error -> ");
-            getMessage().append(action.getTitle());
-            getMessage().append(" is not seen");
+        if (!isSeen(user, action)) {
+            return;
         } else {
             for (Serial show : entities.getSeries()) {
                 if (show.getTitle().equals(action.getTitle())) {
@@ -71,13 +66,27 @@ public final class Rate extends Commands {
                         getMessage().append(" by ");
                         getMessage().append(action.getUsername());
                     } else {
-                        getMessage().append("error -> ");
-                        getMessage().append(show.getTitle());
-                        getMessage().append(" has been already rated");
+                        composeErrorMessage(show);
                     }
                 }
             }
         }
+    }
+
+    private void composeErrorMessage(final Video video) {
+        getMessage().append("error -> ");
+        getMessage().append(video.getTitle());
+        getMessage().append(" has been already rated");
+    }
+
+    private boolean isSeen(final User user, final ActionInputData action) {
+        if (!user.getHistory().containsKey(action.getTitle())) {
+            getMessage().append("error -> ");
+            getMessage().append(action.getTitle());
+            getMessage().append(" is not seen");
+            return false;
+        }
+        return true;
     }
 
 }
