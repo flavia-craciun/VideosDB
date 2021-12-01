@@ -34,24 +34,7 @@ public final class ForActors extends Query {
         getMessage().append("Query result: [");
 
         if (action.getCriteria().compareTo(Constants.FILTER_DESCRIPTIONS) == 0) {
-            List<String> nameList = new ArrayList<>();
-            for (Map.Entry<Actor, Double> entry : actorsByCriteria.entrySet()) {
-                nameList.add(entry.getKey().getName());
-            }
-            if (nameList.isEmpty()) {
-                getMessage().append("]");
-                return getMessage().toString();
-            }
-            Collections.sort(nameList);
-            if (!action.getSortType().equals(Constants.ASCENDENT)) {
-                Collections.reverse(nameList);
-            }
-            IntStream.range(0, nameList.size()).forEach(i -> {
-                getMessage().append(nameList.get(i));
-                getMessage().append(", ");
-            });
-            getMessage().replace(getMessage().length() - 2, getMessage().length() - 1, "]");
-            getMessage().deleteCharAt(getMessage().length() - 1);
+            printActorsByFilterDescription(action);
             return getMessage().toString();
         }
 
@@ -80,48 +63,25 @@ public final class ForActors extends Query {
                     } else {
                         Collections.sort(nameList, Collections.reverseOrder());
                     }
-                    int size = 0;
-                    if (nameList.size() < action.getNumber() - numberOfResults) {
-                        size = nameList.size();
-                    } else {
-                        size = action.getNumber() - numberOfResults;
-                    }
-                        IntStream.range(0, size).forEach(i -> {
-                            getMessage().append(nameList.get(i));
-                            getMessage().append(", ");
-                        });
-                        numberOfResults += size;
+                    printTitles(action, nameList, numberOfResults);
+                        numberOfResults += calculateSize(numberOfResults, nameList, action);
                         nameList.clear();
-                    } else {
-                        numberOfResults++;
-                        getMessage().append(nameList.get(0));
-                        getMessage().append(", ");
-                        nameList.remove(nameList.get(0));
-                    }
-                    aux = entry.getValue();
-                    if (numberOfResults >= action.getNumber()) {
-                        break;
-                    }
+                } else {
+                    numberOfResults++;
+                    getMessage().append(nameList.get(0));
+                    getMessage().append(", ");
+                    nameList.remove(nameList.get(0));
+                }
+                aux = entry.getValue();
+                if (numberOfResults >= action.getNumber()) {
+                    break;
+                }
             }
             nameList.add(entry.getKey().getName());
         }
 
         if (numberOfResults < action.getNumber() && !nameList.isEmpty()) {
-            int size = 0;
-            if (nameList.size() < action.getNumber() - numberOfResults) {
-                size = nameList.size();
-            } else {
-                size = action.getNumber() - numberOfResults;
-            }
-            if (action.getSortType().equals(Constants.ASCENDENT)) {
-                Collections.sort(nameList);
-            } else {
-                Collections.sort(nameList, Collections.reverseOrder());
-            }
-            IntStream.range(0, size).forEach(i -> {
-                getMessage().append(nameList.get(i));
-                getMessage().append(", ");
-            });
+            printTitles(action, nameList, numberOfResults);
         }
 
         getMessage().replace(getMessage().length() - 2, getMessage().length() - 1, "]");
@@ -164,7 +124,6 @@ public final class ForActors extends Query {
                     numberOfAwards = numberOfAwards + actor.getAwards().get(award);
                     if (award.name().compareTo(nameOfAward) == 0) {
                         gotAward = true;
-//                        break;
                     }
                 }
                 if (!gotAward) {
@@ -203,5 +162,26 @@ public final class ForActors extends Query {
             }
         }
         return list;
+    }
+
+    private void printActorsByFilterDescription(final ActionInputData action) {
+        List<String> nameList = new ArrayList<>();
+        for (Map.Entry<Actor, Double> entry : actorsByCriteria.entrySet()) {
+            nameList.add(entry.getKey().getName());
+        }
+        if (nameList.isEmpty()) {
+            getMessage().append("]");
+            return;
+        }
+        Collections.sort(nameList);
+        if (!action.getSortType().equals(Constants.ASCENDENT)) {
+            Collections.reverse(nameList);
+        }
+        IntStream.range(0, nameList.size()).forEach(i -> {
+            getMessage().append(nameList.get(i));
+            getMessage().append(", ");
+        });
+        getMessage().replace(getMessage().length() - 2, getMessage().length() - 1, "]");
+        getMessage().deleteCharAt(getMessage().length() - 1);
     }
 }
