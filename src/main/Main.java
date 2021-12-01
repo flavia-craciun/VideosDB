@@ -11,6 +11,10 @@ import actions.queries.ForShows;
 import actions.queries.ForMovies;
 import actions.queries.ForUsers;
 
+import actions.reccomandations.BestUnseen;
+import actions.reccomandations.ForPremiumUsers;
+import actions.reccomandations.Reccommendation;
+import actions.reccomandations.Standard;
 import checker.Checker;
 import checker.Checkstyle;
 import common.Constants;
@@ -115,7 +119,17 @@ public final class Main {
                     };
                     String message = q.doQuery(action);
                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
-                    break;
+                } else {
+                    if (action.getActionType().equals(Constants.RECOMMENDATION)) {
+                        new Reccommendation(allEntities);
+                        Reccommendation rec = switch (action.getType()) {
+                            case Constants.STANDARD -> new Standard(allEntities);
+                            case Constants.BEST_UNSEEN -> new BestUnseen(allEntities);
+                            default -> new ForPremiumUsers(allEntities);
+                        };
+                        String message = rec.getReccomendation(action);
+                        arrayResult.add(fileWriter.writeFile(action.getActionId(), null, message));
+                    }
                 }
             }
         }
